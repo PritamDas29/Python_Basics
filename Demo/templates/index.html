@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Inventory</title>
+</head>
+<body>
+    <h1>Network Device Inventory</h1>
+
+    <label for="filter">Filter by Model:</label>
+    <select id="filter">
+        <option value="all">All Devices</option>
+        <option value="Nexus 9300">Nexus 9300</option>
+        <option value="Nexus 9500">Nexus 9500</option>
+        <option value="ACI Leaf">ACI Leaf</option>
+    </select>
+
+    <table border="1" id="deviceTable">
+        <tr><th>Name</th><th>Model</th><th>Serial</th><th>Version</th></tr>
+    </table>
+
+    <script>
+        async function loadDevices() {
+            let filter = document.getElementById("filter").value;
+            let response = await fetch("/inventory?model=" + filter);
+            let data = await response.json();
+            let table = document.getElementById("deviceTable");
+            table.innerHTML = "<tr><th>Name</th><th>Model</th><th>Serial</th><th>Version</th></tr>";
+
+            data.forEach(d => {
+                table.innerHTML += `<tr>
+                    <td>${d.name}</td><td>${d.model}</td>
+                    <td>${d.serial}</td><td>${d.version}</td>
+                </tr>`;
+            });
+        }
+        document.getElementById("filter").addEventListener("change", loadDevices);
+        loadDevices();
+    </script>
+</body>
+</html>
